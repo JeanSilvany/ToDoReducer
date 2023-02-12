@@ -1,14 +1,26 @@
 import React, { useCallback, useReducer, useRef, useState } from 'react';
+
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
-import { TextInput, TouchableOpacity, Button } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native';
+
+import { EvilIcons } from '@expo/vector-icons';
+
+import LottieView from 'lottie-react-native';
 
 import {
+  ButtonTitle,
   Container,
+  Content,
   Description,
+  EmptyButton,
+  EmptyContainer,
+  EmptyDescription,
+  EmptyTitle,
   Header,
-  Icon,
   IconContainer,
+  ModalContainer,
   Separator,
   Title,
   TopSection,
@@ -18,6 +30,7 @@ import { FlatList } from 'react-native';
 import { Card } from '../../components/Card';
 
 import { Modalize } from 'react-native-modalize';
+import { useTheme } from 'styled-components/native';
 
 const initialState = {
   items: [],
@@ -60,6 +73,9 @@ export const Home = () => {
   const [description, setDescription] = useState('');
 
   const modalizeRef = useRef<Modalize>(null);
+  const animation = useRef(null);
+
+  const { colors } = useTheme();
 
   const handleOpenModal = () => {
     modalizeRef.current?.open();
@@ -70,6 +86,7 @@ export const Home = () => {
       type: 'ADD_TASK',
       payload: { id: uuidv4(), text: description, done: false },
     });
+    setDescription('');
   };
 
   const handleRemoveTask = (id) => {
@@ -102,46 +119,89 @@ export const Home = () => {
       <Header>
         <TopSection>
           <Title>Tasks</Title>
-          <IconContainer onPress={handleOpenModal}>
-            <Icon>🚀</Icon>
-          </IconContainer>
+          {tasks.items.length ? (
+            <IconContainer onPress={handleOpenModal}>
+              <EvilIcons name="pencil" size={24} color="black" />
+            </IconContainer>
+          ) : null}
         </TopSection>
         <Description>Notes:</Description>
       </Header>
 
       <Separator />
 
-      <FlatList
-        data={tasks.items}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-      />
+      <Content>
+        {tasks.items.length ? (
+          <FlatList
+            data={tasks.items}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <EmptyContainer>
+            <LottieView
+              autoPlay
+              ref={animation}
+              style={{
+                width: 200,
+                height: 200,
+              }}
+              source={require('../../assets/animations/notfound.json')}
+            />
+
+            <EmptyTitle>Add your first note</EmptyTitle>
+
+            <EmptyDescription>
+              Relax and write something beautiful
+            </EmptyDescription>
+
+            <EmptyButton onPress={handleOpenModal}>
+              <ButtonTitle>Add note</ButtonTitle>
+            </EmptyButton>
+          </EmptyContainer>
+        )}
+      </Content>
 
       <Modalize
         ref={modalizeRef}
         adjustToContentHeight
         handlePosition="inside"
-        HeaderComponent={<TextInput style={{ width: '100%' }} />}
-        FooterComponent={<TextInput style={{ width: '100%' }} />}
+        scrollViewProps={{
+          keyboardShouldPersistTaps: 'always',
+        }}
+        modalStyle={{ backgroundColor: colors.background.secondary }}
       >
-        <TextInput
-          style={{
-            height: 40,
-            margin: 12,
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 8,
-          }}
-          onChangeText={(value) => setDescription(value)}
-        />
+        <ModalContainer>
+          <TextInput
+            style={{
+              height: 40,
+              margin: 12,
+              borderBottomWidth: 1,
+              padding: 10,
+              borderRadius: 8,
+            }}
+            onChangeText={(value) => setDescription(value)}
+            value={description}
+          />
 
-        <TouchableOpacity
-          style={{ justifyContent: 'center', alignItems: 'center' }}
-          onPress={handleAddTask}
-        >
-          <Title>Adicionar</Title>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: 50,
+              margin: 12,
+              borderWidth: 1,
+              padding: 10,
+              borderRadius: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: colors.secondary,
+              borderColor: colors.checkbox.border,
+            }}
+            onPress={handleAddTask}
+          >
+            <ButtonTitle>Add note</ButtonTitle>
+          </TouchableOpacity>
+        </ModalContainer>
       </Modalize>
     </Container>
   );

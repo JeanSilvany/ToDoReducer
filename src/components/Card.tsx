@@ -1,11 +1,12 @@
 import React, { FC, memo } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import { useTheme } from 'styled-components/native';
 
 import { Container } from './styles';
 
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { Ionicons } from '@expo/vector-icons';
 
 interface ItemProps {
   id: string;
@@ -37,12 +38,17 @@ export const Card: FC<CardProps> = memo(
             handleDoneTask(data.id);
             setCheckboxState((oldValue) => !oldValue);
           }}
+          textContainerStyle={{ flex: 1, marginRight: 8 }}
+          style={{ flex: 1 }}
           innerIconStyle={{ borderWidth: 2 }}
           isChecked={checkboxState}
           disableBuiltInState
         />
-        <TouchableOpacity onPress={() => handleRemoveTask(data.id)}>
-          <Text>Apagar</Text>
+        <TouchableOpacity
+          onPress={() => handleRemoveTask(data.id)}
+          hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+        >
+          <Ionicons size={24} name="ios-trash-outline" color={'red'} />
         </TouchableOpacity>
       </Container>
     );
