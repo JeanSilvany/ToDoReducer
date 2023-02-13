@@ -3,7 +3,10 @@ import { StyleSheet } from 'react-native';
 export default {
   colors: {
     primary: '#F2F3FF',
-    background: '#FFFFFF',
+    background: {
+      primary: '#FFFFFF',
+      secondary: '#FFFFFF',
+    },
     title: '#000000',
     description: '#575767',
     text: '#575767',
@@ -12,6 +15,7 @@ export default {
       border: '#DADADA',
       background: '#FFFFFF',
     },
+    secondary: '#F8C670',
   },
 };
 
