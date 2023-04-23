@@ -1,12 +1,13 @@
-import React, { FC, memo } from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { FC, memo, useState } from "react";
+import { TouchableOpacity } from "react-native";
 
-import { useTheme } from 'styled-components/native';
+import { useTheme } from "styled-components/native";
 
-import { Container } from './styles';
+import { Container } from "./styles";
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { Ionicons } from '@expo/vector-icons';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
+import { Ionicons } from "@expo/vector-icons";
 
 interface ItemProps {
   id: string;
@@ -22,10 +23,10 @@ interface CardProps {
 
 export const Card: FC<CardProps> = memo(
   ({ data, handleDoneTask, handleRemoveTask }) => {
-    console.log('Card Render');
+    console.log("Card Render");
 
     const { colors } = useTheme();
-    const [checkboxState, setCheckboxState] = React.useState(data.done);
+    const [checkboxState, setCheckboxState] = useState(data.done);
 
     return (
       <Container>
@@ -48,7 +49,7 @@ export const Card: FC<CardProps> = memo(
           onPress={() => handleRemoveTask(data.id)}
           hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
         >
-          <Ionicons size={24} name="ios-trash-outline" color={'red'} />
+          <Ionicons size={24} name="ios-trash-outline" color={"red"} />
         </TouchableOpacity>
       </Container>
     );

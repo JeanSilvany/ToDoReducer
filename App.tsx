@@ -1,29 +1,47 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
+import "react-native-reanimated";
 
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useEffect, useState } from "react";
 
-import { StatusBar, Appearance } from 'react-native';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { ThemeProvider } from 'styled-components';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { Home } from './src/screens/Home';
+import { StatusBar, Appearance } from "react-native";
 
-import light from './src/global/styles/light';
-import dark from './src/global/styles/dark';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeProvider } from "styled-components";
+
+import { Home } from "./src/screens/Home";
+
+import light from "./src/global/styles/light";
+import dark from "./src/global/styles/dark";
 
 export default function App() {
+  const [scheme, setScheme] = useState();
+
   const getTheme = () => {
-    const colorScheme = Appearance.getColorScheme();
-    if (colorScheme === 'dark') return dark;
-    return light;
+    if (Appearance.getColorScheme() === "light") {
+      return light;
+    }
+    return dark;
   };
+
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener((preferences) => {
+      const { colorScheme: scheme } = preferences;
+
+      if (scheme === "light") return setScheme(light);
+      return setScheme(dark);
+    });
+
+    return () => subscription?.remove();
+  }, [setScheme]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider theme={getTheme()}>
+      <ThemeProvider theme={scheme || getTheme()}>
         <SafeAreaProvider>
-          <StatusBar />
+          <StatusBar barStyle="light-content" />
           <Home />
         </SafeAreaProvider>
       </ThemeProvider>

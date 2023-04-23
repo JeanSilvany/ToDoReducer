@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../../global/styles/light';
+import { RectButton } from 'react-native-gesture-handler';
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
@@ -77,6 +78,7 @@ export const EmptyContainer = styled.View`
   justify-content: center;
   align-items: center;
 `;
+
 export const EmptyTitle = styled.Text`
   font-size: 24px;
   font-weight: bold;
@@ -92,17 +94,20 @@ export const EmptyDescription = styled.Text`
   color: ${({ theme }) => theme.colors.description};
 `;
 
-export const EmptyButton = styled.TouchableOpacity`
+export const EmptyButton = styled(RectButton).attrs({
+  activeOpacity: 0.7,
+  ...styles.shadow,
+})`
   margin: 12px;
-  border-width: 1px;
 
   border: ${({ theme }) => theme.colors.checkbox.border};
   background-color: ${({ theme }) => theme.colors.secondary};
-  border-color: ${({ theme }) => theme.colors.checkbox.border};
 
   padding: 16px;
   border-radius: 8px;
 
   justify-content: center;
   align-items: center;
+
+  elevation: 3;
 `;
